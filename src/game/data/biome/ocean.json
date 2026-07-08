@@ -1,0 +1,7 @@
+{
+    "noise": "ocean",
+    "temperature": 0.2,
+    "humidity": 0.9,
+    "frequency": 1,
+    "size": { "min": 5, "max": 10 }
+}

@@ -1,0 +1,6 @@
+{
+    "tile": "plant/sea_shell",
+    "on": ["ground/sand"],
+    "density": 0.03,
+    "function": "solitary"
+}

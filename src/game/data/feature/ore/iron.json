@@ -1,0 +1,9 @@
+{
+    "tile": "ore/iron",
+    "on": [
+        "ground/stone"
+    ],
+    "scale": 6,
+    "density": 0.25,
+    "function": "ore_vein"
+}

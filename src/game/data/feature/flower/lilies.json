@@ -1,0 +1,10 @@
+{
+    "tile": "flower/lilie",
+    "on": [
+        "ground/grass",
+        "ground/dark_grass"
+    ],
+    "scale": 2.5,
+    "density": 0.01,
+    "function": "spread_group"
+}

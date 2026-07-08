@@ -1,0 +1,10 @@
+{
+    "tile": "plant/short_grass",
+    "on": [
+        "ground/grass",
+        "ground/dark_grass"
+    ],
+    "scale": 4,
+    "density": 0.5,
+    "function": "spread_group"
+}

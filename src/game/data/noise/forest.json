@@ -1,0 +1,10 @@
+{
+    "scale": 16,
+    "octaves": 4,
+    "persistence": 0.5,
+    "lacunarity": 2,
+    "layers": [
+        { "tile": "ground/water", "max": 0.35 },
+        { "tile": "ground/grass", "max": 1 }
+    ]
+}

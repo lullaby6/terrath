@@ -1,0 +1,6 @@
+{
+    "layer": "block",
+    "sprite": "rock",
+    "variants": ["rock/1", "rock/2"],
+    "solid": true
+}

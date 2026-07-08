@@ -1,0 +1,15 @@
+{
+    "sprite": "skeleton",
+    "health": 10,
+    "speed": 90,
+    "acceleration": 600,
+    "drag": 600,
+    "scale": 4,
+    "attackDamage": 5,
+    "tags": ["enemy"],
+    "functions": ["chase_target"],
+    "attributes": {
+        "target_tag": "player",
+        "follow_range": 300
+    }
+}

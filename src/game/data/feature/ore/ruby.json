@@ -1,0 +1,9 @@
+{
+    "tile": "ore/ruby",
+    "on": [
+        "ground/stone"
+    ],
+    "scale": 4,
+    "density": 0.18,
+    "function": "ore_vein"
+}

@@ -1,0 +1,18 @@
+{
+    "noise": "plains",
+    "temperature": 0.5,
+    "humidity": 0.5,
+    "frequency": 1,
+    "features": [
+        "patch/dark_grass_patches",
+        "water/lakes",
+        "water/rivers",
+        "tree/trees_sparse",
+        "flower/roses",
+        "flower/dandelions",
+        "plant/short_grass",
+        "plant/rocks",
+        "flower/tulips",
+        "flower/lilies"
+    ]
+}

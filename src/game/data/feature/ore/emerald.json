@@ -1,0 +1,9 @@
+{
+    "tile": "ore/emerald",
+    "on": [
+        "ground/stone"
+    ],
+    "scale": 4,
+    "density": 0.17,
+    "function": "ore_vein"
+}

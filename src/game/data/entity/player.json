@@ -1,0 +1,11 @@
+{
+    "sprite": "player",
+    "health": 10,
+    "speed": 200,
+    "acceleration": 1200,
+    "drag": 800,
+    "scale": 4,
+    "attackDamage": 10,
+    "tags": ["player", "camera"],
+    "functions": ["player_movement"]
+}

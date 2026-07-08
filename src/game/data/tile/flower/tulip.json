@@ -1,0 +1,5 @@
+{
+    "layer": "block",
+    "sprite": "tulip",
+    "flip": { "horizontal": true, "vertical": false, "rotate": false }
+}

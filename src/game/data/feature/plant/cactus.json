@@ -1,0 +1,8 @@
+{
+    "tile": "plant/cactus",
+    "on": [
+        "ground/sand"
+    ],
+    "density": 0.05,
+    "function": "solitary"
+}

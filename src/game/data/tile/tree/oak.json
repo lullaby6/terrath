@@ -1,0 +1,7 @@
+{
+    "layer": "block",
+    "sprite": "tree/oak",
+    "size": 3,
+    "solid": true,
+    "flip": { "horizontal": true, "vertical": false, "rotate": false }
+}

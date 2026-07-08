@@ -1,0 +1,7 @@
+{
+    "tile": "ground/water",
+    "on": ["ground/grass", "ground/dark_grass"],
+    "scale": 80,
+    "density": 0.006,
+    "function": "river"
+}

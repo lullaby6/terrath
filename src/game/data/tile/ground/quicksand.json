@@ -1,0 +1,7 @@
+{
+    "layer": "floor",
+    "sprite": "quicksand",
+    "speedFactor": 0.5,
+    "functions": ["sink"],
+    "flip": { "horizontal": true, "vertical": true, "rotate": true }
+}

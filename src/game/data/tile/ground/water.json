@@ -1,0 +1,8 @@
+{
+    "layer": "block",
+    "sprite": "water",
+    "base": "ground/sand",
+    "avoid": true,
+    "speedFactor": 0.4,
+    "flip": { "horizontal": true, "vertical": true, "rotate": true }
+}

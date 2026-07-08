@@ -1,0 +1,9 @@
+{
+    "tile": "ground/quicksand",
+    "on": [
+        "ground/sand"
+    ],
+    "scale": 14,
+    "density": 0.05,
+    "function": "patch"
+}

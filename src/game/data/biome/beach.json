@@ -1,0 +1,11 @@
+{
+    "noise": "beach",
+    "temperature": 0.3,
+    "humidity": 0.8,
+    "frequency": 1,
+    "size": { "min": 0.5, "max": 1 },
+    "features": [
+        "beach/sea_shells",
+        "plant/rocks"
+    ]
+}

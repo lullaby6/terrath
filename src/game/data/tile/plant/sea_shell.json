@@ -1,0 +1,6 @@
+{
+    "layer": "block",
+    "sprite": "sea_shell",
+    "solid": false,
+    "flip": { "horizontal": true, "vertical": false, "rotate": false }
+}

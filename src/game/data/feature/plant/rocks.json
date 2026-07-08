@@ -1,0 +1,12 @@
+{
+    "tile": "plant/rock",
+    "on": [
+        "ground/grass",
+        "ground/dark_grass",
+        "ground/sand",
+        "ground/stone"
+    ],
+    "scale": 6,
+    "density": 0.12,
+    "function": "spread_group"
+}

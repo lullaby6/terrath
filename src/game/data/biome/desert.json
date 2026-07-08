@@ -1,0 +1,11 @@
+{
+    "noise": "desert",
+    "temperature": 0.7,
+    "humidity": 0.3,
+    "frequency": 1,
+    "features": [
+        "patch/quicksand_patches",
+        "plant/rocks",
+        "plant/cactus"
+    ]
+}

@@ -1,0 +1,9 @@
+{
+    "tile": "ore/amethyst",
+    "on": [
+        "ground/stone"
+    ],
+    "scale": 5,
+    "density": 0.19,
+    "function": "ore_vein"
+}

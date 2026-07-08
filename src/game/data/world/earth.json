@@ -1,0 +1,14 @@
+{
+    "seed": 12345,
+    "climate": {
+        "temperatureScale": 48,
+        "humidityScale": 48,
+        "contrast": 2.5
+    },
+    "biomesSize": { "min": 2.5, "max": 5 },
+    "biomes": ["plains", "desert", "mountain", "ocean", "beach", "forest"],
+    "spawns": [
+        { "entity": "player", "x": 0, "y": 0 },
+        { "entity": "skeleton", "x": 256, "y": 256 }
+    ]
+}
