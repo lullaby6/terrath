@@ -3,10 +3,6 @@
     "temperature": 0.35,
     "humidity": 0.55,
     "frequency": 1,
-    "size": {
-        "min": 2.5,
-        "max": 5
-    },
     "features": [
         "ore/emerald",
         "ore/sapphire",

@@ -1,0 +1,13 @@
+{
+    "noise": "snow_forest",
+    "temperature": 0.1,
+    "humidity": 0.65,
+    "frequency": 1,
+    "features": [
+        "water/open_water",
+        "water/frozen_lakes",
+        "water/frozen_rivers",
+        "tree/trees_snow",
+        "plant/rocks"
+    ]
+}

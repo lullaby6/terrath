@@ -1,0 +1,6 @@
+{
+    "tile": "tree/oak",
+    "on": ["ground/snow"],
+    "density": 0.015,
+    "function": "solitary"
+}

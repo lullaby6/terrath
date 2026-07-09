@@ -4,10 +4,13 @@ import { resolveId } from '@/game/api';
 // Tile layer: 'floor' = base ground layer; 'block' = goes above floor.
 export type TileLayer = 'floor' | 'block';
 
-// Depth base for Y-sorted objects (tall trees, entities). Adding the world Y
-// makes lower objects draw on top, so a tree's canopy can cover what's behind
-// it (Zelda/Stardew-style). Kept well above floor(0)/block(1) depths.
-export const Y_SORT_BASE = 1000;
+// Fixed, very-negative depths for the ground layers, so they are ALWAYS drawn
+// below Y-sorted objects (trees, entities) — even when those have a large
+// negative world Y far from the origin. Y-sorted objects use their world Y
+// directly as depth (lower on screen = drawn on top), which stays above these
+// constants for any reachable position.
+export const FLOOR_DEPTH = -2_000_000_000;
+export const SMALL_BLOCK_DEPTH = -1_000_000_000;
 
 // Unified tile definition (data/tile/*.json). Works for floors and blocks:
 // the difference is the `layer` field. Everything is data-driven — adding

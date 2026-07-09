@@ -5,8 +5,8 @@
         "humidityScale": 48,
         "contrast": 2.5
     },
-    "biomesSize": { "min": 2.5, "max": 5 },
-    "biomes": ["plains", "desert", "mountain", "ocean", "beach", "forest"],
+    "biomesSize": { "min": 10, "max": 20 },
+    "biomes": ["plains", "desert", "mountain", "ocean", "beach", "forest", "snow_plains", "snow_forest"],
     "spawns": [
         { "entity": "player", "x": 0, "y": 0 },
         { "entity": "skeleton", "x": 256, "y": 256 }

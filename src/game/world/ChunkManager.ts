@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { WorldGenerator } from './WorldGenerator';
-import { Tile, SolidBlock, TileDef, Y_SORT_BASE } from '@/game/entities/Tile';
+import { Tile, SolidBlock, TileDef, FLOOR_DEPTH, SMALL_BLOCK_DEPTH } from '@/game/entities/Tile';
 
 const chunkKey = (cx: number, cy: number) => `${cx},${cy}`;
 
@@ -85,6 +85,10 @@ export class ChunkManager {
         const originX = cx * this.chunkSize * this.tileSize;
         const originY = cy * this.chunkSize * this.tileSize;
         const container = this.scene.add.container(originX, originY);
+        // The whole ground layer (floors + small blocks) sits far below any
+        // Y-sorted object, so entities/trees always draw on top regardless of
+        // their world Y (which can be large and negative in an infinite world).
+        container.setDepth(FLOOR_DEPTH);
         const solids: SolidBlock[] = [];
 
         const half = this.tileSize / 2;
@@ -98,7 +102,8 @@ export class ChunkManager {
                 const px = lx * this.tileSize + half;
                 const py = ly * this.tileSize + half;
 
-                // Floor: a Tile with its def, inside the container.
+                // Floor: a Tile inside the container (depth is local: 0 = below
+                // the container's small blocks; the container sits at FLOOR_DEPTH).
                 if (floorDef) {
                     const floor = new Tile(this.scene, px, py, this.tileSize, floorDef, gx, gy);
                     floor.setDepth(0);
@@ -113,16 +118,15 @@ export class ChunkManager {
                         if (blockDef.solid) {
                             // SolidBlock: goes DIRECTLY to the scene in world coordinates
                             // (not in the container) so its physics body works correctly.
-                            // The chunk tracks it to destroy it later.
                             const worldY = originY + py;
                             const block = new SolidBlock(this.scene, originX + px, worldY, this.tileSize, blockDef, gx, gy);
-                            // Big sprites (trees) sort by Y with entities so their
-                            // top can overlap what's behind; small solids stay at 1.
-                            block.setDepth(big ? Y_SORT_BASE + worldY : 1);
+                            // Big sprites (trees) Y-sort with entities (depth = world Y);
+                            // small solids sit just above the ground layer.
+                            block.setDepth(big ? worldY : SMALL_BLOCK_DEPTH + 1);
                             this.solidBlocksGroup.add(block);
                             solids.push(block);
                         } else {
-                            // Decorative block: inside the container (no physics).
+                            // Decorative block: inside the container (local depth 1).
                             const block = new Tile(this.scene, px, py, this.tileSize, blockDef, gx, gy);
                             block.setDepth(1);
                             container.add(block);

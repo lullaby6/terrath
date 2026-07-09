@@ -1,0 +1,7 @@
+{
+    "tile": "ground/ice",
+    "on": ["ground/snow"],
+    "scale": 25,
+    "density": 0.05,
+    "function": "spread_group"
+}

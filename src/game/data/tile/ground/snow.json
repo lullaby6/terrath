@@ -1,0 +1,6 @@
+{
+    "layer": "floor",
+    "sprite": "snow",
+    "speedFactor": 0.9,
+    "flip": { "rotate": true }
+}

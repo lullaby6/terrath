@@ -4,7 +4,7 @@ import {
 } from '@/game/world/WorldGenerator';
 import { ChunkManager } from '@/game/world/ChunkManager';
 import { Entity, EntityStats, EntityWorld } from '@/game/entities/Entity';
-import { TileDef, Y_SORT_BASE } from '@/game/entities/Tile';
+import { TileDef } from '@/game/entities/Tile';
 import { ENTITY_FUNCTIONS, FEATURE_FUNCTIONS, TILE_FUNCTIONS } from '@/game/api/registries';
 import { resolveId, EntityFunction, FeatureFunction, TileFunction } from '@/game/api';
 import { loadAllImages } from '@/game/assets/loader';
@@ -102,7 +102,7 @@ export class Game extends Scene {
             .filter(Boolean);
 
         const entity = new Entity(this, x, y, stats, behaviors);
-        entity.setDepth(Y_SORT_BASE + y); // Y-sorted; updated each frame
+        entity.setDepth(y); // Y-sorted (depth = world Y); updated each frame
         this.physics.add.collider(entity, this.solidBlocksGroup);
         this.entities.push(entity);
         return entity;
@@ -128,9 +128,9 @@ export class Game extends Scene {
         for (const e of this.entities) {
             e.update(ctx);
             this.applyFloor(e, time, delta);
-            // Y-sort with tall tiles (trees): lower entities draw on top, so a
-            // tree above the entity covers it and one below is covered.
-            e.setDepth(Y_SORT_BASE + e.y);
+            // Y-sort with tall tiles (trees): depth = world Y, so a lower object
+            // draws on top (tree above the entity covers it; one below is covered).
+            e.setDepth(e.y);
         }
         this.chunks.update();
     }
@@ -141,8 +141,12 @@ export class Game extends Scene {
     private applyFloor(e: Entity, time: number, delta: number): void {
         const { floorDef, blockDef, blockName } = this.chunks.tilesAt(e.x, e.y);
 
+        // Reset per-frame terrain modifiers to the entity's base values, then
+        // let speedFactor / tile functions modify them (so effects revert when
+        // the entity leaves the tile).
         const factor = blockDef?.speedFactor ?? floorDef?.speedFactor ?? 1;
         e.setMaxSpeed(e.speed * factor);
+        e.setDrag(e.drag, e.drag);
 
         // Run tile functions from the block (if present) then the floor.
         for (const def of [blockDef, floorDef]) {

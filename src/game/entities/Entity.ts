@@ -46,6 +46,7 @@ export class Entity extends Physics.Arcade.Sprite {
     health: number;
     speed: number;
     acceleration: number;
+    drag: number;
     attackDamage: number;
 
     readonly tags: string[];
@@ -64,6 +65,7 @@ export class Entity extends Physics.Arcade.Sprite {
         this.health = stats.health;
         this.speed = stats.speed;
         this.acceleration = stats.acceleration;
+        this.drag = stats.drag;
         this.attackDamage = stats.attackDamage;
 
         this.tags = stats.tags ?? [];

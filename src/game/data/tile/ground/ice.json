@@ -1,0 +1,7 @@
+{
+    "layer": "block",
+    "sprite": "ice",
+    "base": "ground/sand",
+    "functions": ["slippery"],
+    "flip": { "horizontal": true, "vertical": true, "rotate": true }
+}

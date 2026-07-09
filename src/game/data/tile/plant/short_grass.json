@@ -1,4 +1,5 @@
 {
     "layer": "block",
-    "sprite": "short_grass"
+    "sprite": "short_grass",
+    "variants": ["short_grass/1", "short_grass/2", "short_grass/3"]
 }

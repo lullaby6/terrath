@@ -6,7 +6,7 @@
         "ground/sand",
         "ground/stone"
     ],
-    "scale": 6,
-    "density": 0.12,
+    "scale": 4,
+    "density": 0.05,
     "function": "spread_group"
 }
