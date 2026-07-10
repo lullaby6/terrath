@@ -4,5 +4,7 @@
     "base": "ground/sand",
     "avoid": true,
     "speedFactor": 0.4,
-    "flip": { "horizontal": true, "vertical": true, "rotate": true }
+    "submerge": 0.1,
+    "walkParticles": ["water_splash"],
+    "variation": { "horizontal": true, "vertical": true, "rotate": true }
 }

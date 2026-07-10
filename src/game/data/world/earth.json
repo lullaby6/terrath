@@ -6,6 +6,12 @@
         "contrast": 2.5
     },
     "biomesSize": { "min": 10, "max": 20 },
+    "dayNight": {
+        "dayDuration": 600000,
+        "nightDuration": 600000,
+        "nightColor": "#050819",
+        "nightAlpha": 0.9
+    },
     "biomes": ["plains", "desert", "mountain", "ocean", "beach", "forest", "snow_plains", "snow_forest"],
     "spawns": [
         { "entity": "player", "x": 0, "y": 0 },

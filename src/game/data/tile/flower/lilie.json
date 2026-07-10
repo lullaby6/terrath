@@ -1,5 +1,5 @@
 {
     "layer": "block",
     "sprite": "lilie",
-    "flip": { "horizontal": true, "vertical": false, "rotate": false }
+    "variation": { "horizontal": true, "vertical": false, "rotate": false }
 }

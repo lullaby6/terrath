@@ -7,5 +7,6 @@
     "scale": 4,
     "attackDamage": 10,
     "tags": ["player", "camera"],
-    "functions": ["player_movement"]
+    "functions": ["player_movement", "face_mouse"],
+    "walkParticles": ["footprints", "dirt_burst"]
 }

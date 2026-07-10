@@ -3,5 +3,5 @@
     "sprite": "tree/oak",
     "size": 3,
     "solid": true,
-    "flip": { "horizontal": true, "vertical": false, "rotate": false }
+    "variation": { "horizontal": true, "vertical": false, "rotate": false }
 }

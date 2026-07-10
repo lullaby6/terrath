@@ -1,0 +1,15 @@
+{
+    "count": 1,
+    "color": "#6fb7e8",
+    "size": [2, 4],
+    "alpha": 0.8,
+    "alphaEnd": 0,
+    "scaleEnd": 0.2,
+    "lifetime": [0.3, 0.5],
+    "speed": [50, 100],
+    "drag": 5,
+    "direction": "radial",
+    "continuous": true,
+    "rate": 10,
+    "depth": 60
+}

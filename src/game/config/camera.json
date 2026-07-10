@@ -1,4 +1,6 @@
 {
     "zoom": 1,
-    "followLerp": 0.1
+    "followLerp": 0.1,
+    "speedZoomFactor": 0.05,
+    "zoomLerp": 0.05
 }

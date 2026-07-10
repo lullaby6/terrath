@@ -1,0 +1,14 @@
+{
+    "count": 5,
+    "color": "#6b5335",
+    "size": [2, 4],
+    "alpha": 0.7,
+    "alphaEnd": 0,
+    "scaleEnd": 0.3,
+    "lifetime": [0.3, 0.6],
+    "speed": [40, 90],
+    "drag": 4,
+    "spin": 6,
+    "direction": "back",
+    "depth": -60
+}

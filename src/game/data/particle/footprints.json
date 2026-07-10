@@ -1,0 +1,11 @@
+{
+    "count": 2,
+    "color": "#3a2c1e",
+    "size": [3, 4],
+    "alpha": 0.35,
+    "alphaEnd": 0,
+    "lifetime": [1.5, 2.2],
+    "direction": "static",
+    "footSpread": 6,
+    "depth": -60
+}

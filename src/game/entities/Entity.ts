@@ -14,6 +14,7 @@ export interface EntityStats {
     tags?: string[];              // labels for filtering/targeting (e.g. "player", "enemy")
     functions?: string[];         // behavior functions run each frame, by name
     attributes?: Record<string, any>; // free-form params read by functions
+    walkParticles?: string[];     // particle effects emitted while walking (on ground)
 }
 
 // World services that entity functions may need. The scene provides it, so
@@ -51,6 +52,7 @@ export class Entity extends Physics.Arcade.Sprite {
 
     readonly tags: string[];
     readonly attributes: Record<string, any>;
+    readonly walkParticles?: string[];
     private behaviors: EntityFunction[];
 
     // Free-form state for functions to use (paths, timers, etc).
@@ -70,6 +72,7 @@ export class Entity extends Physics.Arcade.Sprite {
 
         this.tags = stats.tags ?? [];
         this.attributes = stats.attributes ?? {};
+        this.walkParticles = stats.walkParticles;
         this.behaviors = behaviors;
 
         this.setScale(stats.scale);

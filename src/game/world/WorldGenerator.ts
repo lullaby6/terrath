@@ -63,6 +63,14 @@ export interface SpawnDef {
     y: number;
 }
 
+// Day/night cycle config (per world, since heaven/hell may differ).
+export interface DayNightConfig {
+    dayDuration: number;    // ms of full day
+    nightDuration: number;  // ms of full night
+    nightColor: string;     // overlay tint at midnight, e.g. "#0a1030"
+    nightAlpha: number;     // overlay opacity at midnight [0,1]
+}
+
 // Config of a specific world (world/earth.json). Unique to each world.
 export interface WorldConfig {
     seed: number;
@@ -71,9 +79,10 @@ export interface WorldConfig {
         humidityScale: number;
         contrast: number; // expands the climate noise range (1 = no change)
     };
-    biomesSize?: SizeRange; // default region size for biomes without their own
-    biomes: string[];       // biome names to load
-    spawns: SpawnDef[];     // entities to spawn when the world loads
+    biomesSize?: SizeRange;    // default region size for biomes without their own
+    dayNight?: DayNightConfig; // optional day/night cycle
+    biomes: string[];          // biome names to load
+    spawns: SpawnDef[];        // entities to spawn when the world loads
 }
 
 // Fallback biome size if neither the biome nor the world config specify one.

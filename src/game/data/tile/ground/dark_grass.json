@@ -1,5 +1,5 @@
 {
     "layer": "floor",
     "sprite": "dark_grass",
-    "flip": { "horizontal": true, "vertical": true, "rotate": true }
+    "variation": { "horizontal": true, "vertical": true, "rotate": true }
 }

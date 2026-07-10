@@ -10,9 +10,9 @@ const config: Types.Core.GameConfig = {
     parent: 'game-container',
     backgroundColor: '#028af8',
     pixelArt: true,
-    // antialias: false,
-    // antialiasGL: false,
-    // roundPixels: false,
+    // antialias: true,
+    // antialiasGL: true,
+    // roundPixels: true,
     scale: {
         mode: Scale.FIT,
         autoCenter: Scale.CENTER_BOTH

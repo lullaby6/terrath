@@ -27,8 +27,15 @@ export interface TileDef {
     solid?: boolean;       // blocks movement physically (rock, etc)
     avoid?: boolean;       // pathfinding avoids it (water, etc)
     speedFactor?: number;  // speed multiplier when stepped on (default 1)
+    submerge?: number;     // fraction [0,1] of an entity's sprite hidden from the
+                           // bottom while on this tile (looks submerged; water 0.25)
     functions?: string[];  // tile_functions with logic (sink, burn, ...) by name
-    flip?: {
+    walkParticles?: string[]; // overrides the entity's walk particles on this tile
+                              // (e.g. water splashes instead of leaving footprints)
+    // Random per-tile visual variation (deterministic by coordinate), to break
+    // up the repetition of tiled pixel art. horizontal/vertical mirror the
+    // sprite; rotate turns it 0/90/180/270°.
+    variation?: {
         horizontal?: boolean;
         vertical?: boolean;
         rotate?: boolean;
@@ -74,13 +81,13 @@ export class Tile extends GameObjects.Image {
             this.setDisplaySize(size, size);
         }
 
-        if (config.flip) {
-            this.applyRandomFlip(config.flip, gx, gy);
+        if (config.variation) {
+            this.applyVariation(config.variation, gx, gy);
         }
     }
 
-    private applyRandomFlip(flipCfg: any, gx: number, gy: number): void {
-        const { horizontal, vertical, rotate } = flipCfg;
+    private applyVariation(cfg: any, gx: number, gy: number): void {
+        const { horizontal, vertical, rotate } = cfg;
         if (horizontal && hashRandom(gx, gy) < 0.5) this.setFlipX(true);
         if (vertical && hashRandom(gx + 1013, gy - 977) < 0.5) this.setFlipY(true);
         if (rotate) {
