@@ -1,0 +1,7 @@
+{
+    "toggleKey": "P",
+    "startEnabled": false,
+    "refreshMs": 250,
+    "showHitboxes": true,
+    "showChunkBorders": true
+}

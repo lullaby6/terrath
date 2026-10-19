@@ -37,6 +37,9 @@ export function loadTiles<T>(): Record<string, T> {
 export function loadEntities<T>(): Record<string, T> {
     return toRecord<T>(import.meta.glob('./entity/**/*.json', { eager: true, import: 'default' }));
 }
+export function loadWorlds<T>(): Record<string, T> {
+    return toRecord<T>(import.meta.glob('./world/**/*.json', { eager: true, import: 'default' }));
+}
 export function loadParticles<T>(): Record<string, T> {
     return toRecord<T>(import.meta.glob('./particle/**/*.json', { eager: true, import: 'default' }));
 }

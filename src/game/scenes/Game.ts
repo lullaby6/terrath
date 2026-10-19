@@ -1,4 +1,4 @@
-import { Scene } from 'phaser';
+import { Scene, Scenes, Textures } from 'phaser';
 import {
     WorldGenerator, WorldConfig, GameConfig, BiomeDef, NoiseConfig, FeatureConfig,
 } from '@/game/world/WorldGenerator';
@@ -6,19 +6,22 @@ import { ChunkManager } from '@/game/world/ChunkManager';
 import { DayNightCycle } from '@/game/world/DayNightCycle';
 import { ParticleSystem } from '@/game/world/ParticleSystem';
 import { ParticleEffectDef, emitEffect } from '@/game/world/ParticleEffect';
+import { DebugOverlay, DebugConfig } from '@/game/world/DebugOverlay';
 import { Entity, EntityStats, EntityWorld } from '@/game/entities/Entity';
 import { TileDef } from '@/game/entities/Tile';
 import { ENTITY_FUNCTIONS, FEATURE_FUNCTIONS, TILE_FUNCTIONS } from '@/game/api/registries';
 import { resolveId, EntityFunction, FeatureFunction, TileFunction } from '@/game/api';
 import { loadAllImages } from '@/game/assets/loader';
-import { loadBiomes, loadNoises, loadTiles, loadFeatures, loadEntities, loadParticles } from '@/game/data/loader';
-import { modContent } from '@/game/mods/registry';
+import {
+    loadBiomes, loadNoises, loadTiles, loadFeatures, loadEntities, loadParticles, loadWorlds,
+} from '@/game/data/loader';
+import { modContent, withMods } from '@/game/mods/registry';
 
-import worldConfig from '@/game/data/world/earth.json';
 import gameConfig from '@/game/config/game.json';
 import cameraConfig from '@/game/config/camera.json';
 import particlesConfig from '@/game/config/particles.json';
 import crosshairConfig from '@/game/config/crosshair.json';
+import debugConfig from '@/game/config/debug.json';
 
 export class Game extends Scene {
     private chunks!: ChunkManager;
@@ -33,6 +36,8 @@ export class Game extends Scene {
     private particleDefs!: Record<string, ParticleEffectDef>;
     private crosshair!: Phaser.GameObjects.Image;
     private cameraTarget?: Entity;
+    private cameraAnchor?: Phaser.GameObjects.Zone; // ghost point the camera follows
+    private debug!: DebugOverlay;
 
     constructor() {
         super('Game');
@@ -40,22 +45,22 @@ export class Game extends Scene {
 
     preload() {
         // Base images (bundled) + mod images (data URIs read from disk).
-        loadAllImages(this);
-        for (const [key, dataUri] of Object.entries(modContent().assets)) {
+        const modAssets = modContent().assets;
+        loadAllImages(this, new Set(Object.keys(modAssets)));
+        for (const [key, dataUri] of Object.entries(modAssets)) {
             this.load.image(key, dataUri);
         }
     }
 
-    // Merges base content (Record<"terrath:id", T>) with a mod category so mod
-    // ids add to, or override, the base ones.
-    private withMods<T>(base: Record<string, T>, category: string): Record<string, T> {
-        return { ...base, ...(modContent().data[category] as Record<string, T> ?? {}) };
-    }
-
     create() {
-        const tileDefs = this.withMods(loadTiles<TileDef>(), 'tile');
-        this.entityDefs = this.withMods(loadEntities<EntityStats>(), 'entity');
-        this.particleDefs = this.withMods(loadParticles<ParticleEffectDef>(), 'particle');
+        for (const key of this.textures.getTextureKeys()) {
+            this.textures.get(key).setWrap(Textures.WrapMode.CLAMP_TO_EDGE);
+        }
+
+        const worldConfig = withMods(loadWorlds<WorldConfig>(), 'world')[resolveId('earth')];
+        const tileDefs = withMods(loadTiles<TileDef>(), 'tile');
+        this.entityDefs = withMods(loadEntities<EntityStats>(), 'entity');
+        this.particleDefs = withMods(loadParticles<ParticleEffectDef>(), 'particle');
         this.particles = new ParticleSystem(this, particlesConfig);
 
         // Function registries: base ones under the "terrath" namespace, plus mod
@@ -66,11 +71,11 @@ export class Game extends Scene {
         const featureFunctions = mergeFunctions<FeatureFunction>(FEATURE_FUNCTIONS, 'feature');
 
         const generator = new WorldGenerator(
-            worldConfig as WorldConfig,
+            worldConfig,
             gameConfig as GameConfig,
-            this.withMods(loadBiomes<BiomeDef>(), 'biome'),
-            this.withMods(loadNoises<NoiseConfig>(), 'noise'),
-            this.withMods(loadFeatures<FeatureConfig>(), 'feature'),
+            withMods(loadBiomes<BiomeDef>(), 'biome'),
+            withMods(loadNoises<NoiseConfig>(), 'noise'),
+            withMods(loadFeatures<FeatureConfig>(), 'feature'),
             tileDefs,
             featureFunctions,
         );
@@ -87,24 +92,44 @@ export class Game extends Scene {
         };
 
         // Spawn entities from the world config (data-driven, no hardcoding).
-        for (const spawn of (worldConfig as WorldConfig).spawns) {
+        for (const spawn of worldConfig.spawns) {
+            if (!this.entityDefs[resolveId(spawn.entity)]) {
+                console.warn(`[world] unknown entity in spawns: ${spawn.entity}`);
+                continue;
+            }
             this.spawnEntity(spawn.entity, spawn.x, spawn.y);
         }
 
-        // Camera follows the entity tagged "camera" (data-driven target).
+        // The camera follows a ghost "anchor" that itself chases the target
+        // entity (tag "camera") smoothly in our own update. This decouples the
+        // camera from the entity's (physics-driven, jittery) motion, giving full
+        // control of the smoothing.
         const cam = this.cameras.main;
         cam.setZoom(cameraConfig.zoom);
+        cam.setRoundPixels(false);
         const target = this.nearestWithTag('camera', 0, 0);
         if (target) {
             this.cameraTarget = target;
-            cam.startFollow(target, true, cameraConfig.followLerp, cameraConfig.followLerp);
+            this.cameraAnchor = this.add.zone(target.x, target.y, 1, 1);
+            cam.startFollow(this.cameraAnchor, false, 1, 1);
+            this.events.on(Scenes.Events.POST_UPDATE, this.updateCameraAnchor, this);
+            this.events.on(Scenes.Events.POST_UPDATE, this.updateSpeedZoom, this);
         }
 
         // Day/night cycle (optional, per world config).
-        const dn = (worldConfig as WorldConfig).dayNight;
+        const dn = worldConfig.dayNight;
         if (dn) this.dayNight = new DayNightCycle(this, dn);
 
         this.setupCrosshair();
+
+        this.debug = new DebugOverlay(this, debugConfig as DebugConfig, {
+            chunks: this.chunks,
+            particles: this.particles,
+            entities: () => this.entities,
+            focus: () => this.cameraTarget,
+            dayNight: this.dayNight,
+            seed: worldConfig.seed,
+        });
 
         this.chunks.update();
     }
@@ -164,23 +189,33 @@ export class Game extends Scene {
         }
         this.chunks.update();
         this.dayNight?.update(delta);
-        this.updateSpeedZoom();
+        this.debug.update(delta);
 
         // Crosshair follows the mouse (screen space; pinned to the camera).
         const p = this.input.activePointer;
         this.crosshair.setPosition(p.x, p.y);
     }
 
-    // Zooms the camera out as the followed entity moves faster (speed effect),
-    // easing smoothly back to the base zoom when it slows/stops.
+    // Moves the ghost anchor smoothly toward the camera target. The camera is
+    // pinned to this anchor, so all smoothing lives here (frame-rate corrected).
+    private updateCameraAnchor(): void {
+        const a = this.cameraAnchor, t = this.cameraTarget;
+        if (!a || !t) return;
+        // Frame-rate independent lerp factor.
+        const k = 1 - Math.pow(1 - cameraConfig.followLerp, this.game.loop.delta / 16.667);
+        a.x += (t.x - a.x) * k;
+        a.y += (t.y - a.y) * k;
+    }
+
     private updateSpeedZoom(): void {
         const t = this.cameraTarget;
         if (!t) return;
         const body = t.body as Phaser.Physics.Arcade.Body;
-        const ratio = Math.min(1, body.velocity.length() / t.speed); // 0..1
+        const ratio = Math.min(1, body.velocity.length() / t.speed);
         const targetZoom = cameraConfig.zoom - cameraConfig.speedZoomFactor * ratio;
+        const k = 1 - Math.pow(1 - cameraConfig.zoomLerp, this.game.loop.delta / 16.667);
         const cam = this.cameras.main;
-        cam.setZoom(cam.zoom + (targetZoom - cam.zoom) * cameraConfig.zoomLerp);
+        cam.setZoom(cam.zoom + (targetZoom - cam.zoom) * k);
     }
 
     // Emits an entity's walk particles as it moves, one "step" per STEP_DIST px

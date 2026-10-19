@@ -5,9 +5,11 @@
 // One data file inside a mod: its category (tile/entity/biome/...), the base
 // filename (without extension) and the parsed JSON content.
 export interface ModDataFile {
-    category: string;   // "tile", "entity", "biome", "feature", "noise"
+    category: string;   // "tile", "entity", "biome", "feature", "noise", "particle", "world"
     name: string;       // "ruby_ore" (filename without .json)
     json: unknown;      // parsed content
+    target?: string;
+    patch?: boolean;
 }
 
 // One image asset inside a mod, already read as a data URI so it can be
@@ -16,14 +18,16 @@ export interface ModAsset {
     type: string;       // "block", "entity", ...  (top folder under images/)
     name: string;       // "ruby_ore" or "rock/1" (path after type, no extension)
     dataUri: string;    // "data:image/png;base64,..."
+    target?: string;
 }
 
 // One behavior function inside a mod, already transpiled from TS to plain JS
 // source. The renderer evaluates it with the API injected as a global.
 export interface ModFunction {
-    kind: string;       // "function" | "feature_function" | "tile_function"
+    kind: string;       // "entity" | "tile" | "feature"
     name: string;       // "explode" (filename without extension)
     jsSource: string;   // transpiled JS (ESM-free, uses the Terrath global)
+    target?: string;
 }
 
 // A fully-read mod, namespaced by its folder name.

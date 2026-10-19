@@ -133,8 +133,7 @@ export class WorldGenerator {
         this.humidNoise = new PerlinNoise(config.seed + 2);
 
         // All refs in base content are resolved to full "terrath:id" ids here so
-        // the hot path (sample) compares already-normalized ids. When mods land,
-        // the loader will pass each def's own namespace as the resolve default.
+        // the hot path (sample) compares already-normalized ids.
         this.biomes = config.biomes.map((name, i) => {
             const def = biomeConfigs[resolveId(name)];
             // Size: biome's own, else the world default, else 1. Weight combines

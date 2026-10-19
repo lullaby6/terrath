@@ -1,10 +1,15 @@
-- particle system
 - combat (particles, camera shake, camera flash red)
 - items
 - inventory
 - gui
-- crosshair
 - stats
 - food
-- trees
 - animals
+- menu: start, pause, death, config: controls, video, sound
+- spawn system
+- night
+- lights
+- shadows
+- caverns
+- structures
+- dungeons

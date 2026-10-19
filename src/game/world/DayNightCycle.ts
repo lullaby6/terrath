@@ -45,6 +45,14 @@ export class DayNightCycle {
         this.overlay.setAlpha(this.darknessAt(this.elapsed));
     }
 
+    get state(): { isDay: boolean; progress: number; darkness: number } {
+        return {
+            isDay: this.elapsed < this.config.dayDuration,
+            progress: this.elapsed / this.cycleLength,
+            darkness: this.overlay.alpha,
+        };
+    }
+
     // Darkness [0, nightAlpha] over the cycle: 0 during day, easing up through
     // dusk to nightAlpha across night, easing back down through dawn.
     private darknessAt(t: number): number {

@@ -1,0 +1,5 @@
+{
+    "spawns+": [
+        { "entity": "wanderer", "x": 48, "y": 0 }
+    ]
+}

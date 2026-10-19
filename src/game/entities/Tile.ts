@@ -62,11 +62,29 @@ function pickSprite(config: TileDef, gx: number, gy: number): string {
     return resolveId(config.sprite);
 }
 
+export interface TileLook {
+    key: string;
+    flipX: boolean;
+    flipY: boolean;
+    angle: number;
+}
+
+export function tileLook(config: TileDef, gx: number, gy: number): TileLook {
+    const v = config.variation;
+    return {
+        key: pickSprite(config, gx, gy),
+        flipX: !!v?.horizontal && hashRandom(gx, gy) < 0.5,
+        flipY: !!v?.vertical && hashRandom(gx + 1013, gy - 977) < 0.5,
+        angle: v?.rotate ? Math.floor(hashRandom(gx - 313, gy + 571) * 4) * 90 : 0,
+    };
+}
+
 // Generic tile: floor, block, decoration. Extends Image, handles automatic
 // flip based on config and global coordinate (deterministic).
 export class Tile extends GameObjects.Image {
     constructor(scene: Scene, x: number, y: number, size: number, config: TileDef, gx: number, gy: number) {
-        super(scene, x, y, pickSprite(config, gx, gy));
+        const look = tileLook(config, gx, gy);
+        super(scene, x, y, look.key);
         scene.add.existing(this);
 
         const footprint = config.size ?? 1;
@@ -81,19 +99,8 @@ export class Tile extends GameObjects.Image {
             this.setDisplaySize(size, size);
         }
 
-        if (config.variation) {
-            this.applyVariation(config.variation, gx, gy);
-        }
-    }
-
-    private applyVariation(cfg: any, gx: number, gy: number): void {
-        const { horizontal, vertical, rotate } = cfg;
-        if (horizontal && hashRandom(gx, gy) < 0.5) this.setFlipX(true);
-        if (vertical && hashRandom(gx + 1013, gy - 977) < 0.5) this.setFlipY(true);
-        if (rotate) {
-            const quarter = Math.floor(hashRandom(gx - 313, gy + 571) * 4);
-            this.setAngle(quarter * 90);
-        }
+        this.setFlip(look.flipX, look.flipY);
+        this.setAngle(look.angle);
     }
 }
 

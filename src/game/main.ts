@@ -9,10 +9,8 @@ const config: Types.Core.GameConfig = {
     height: 720,
     parent: 'game-container',
     backgroundColor: '#028af8',
-    pixelArt: true,
-    // antialias: true,
-    // antialiasGL: true,
-    // roundPixels: true,
+    smoothPixelArt: true,
+    roundPixels: false,
     scale: {
         mode: Scale.FIT,
         autoCenter: Scale.CENTER_BOTH
@@ -20,7 +18,8 @@ const config: Types.Core.GameConfig = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: false
+            debug: false,
+            fixedStep: false,
         }
     },
     scene: [

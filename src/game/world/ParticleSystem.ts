@@ -29,6 +29,14 @@ export class ParticleSystem {
         scene.events.once(Scenes.Events.DESTROY, this.cleanup, this);
     }
 
+    get activeCount(): number {
+        return this.active;
+    }
+
+    get poolSize(): number {
+        return this.pool.length;
+    }
+
     // Spawns one particle from the pool (no-op if the pool/cap is exhausted).
     emit(props: ParticleSpawn): void {
         if (this.active >= this.maxActive) return;

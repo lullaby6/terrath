@@ -23,8 +23,9 @@ function keyFromPath(path: string): string {
     return `${BASE_NAMESPACE}:${name}`;
 }
 
-export function loadAllImages(scene: Scene): void {
+export function loadAllImages(scene: Scene, skip: Set<string> = new Set()): void {
     for (const [path, url] of Object.entries(images)) {
-        scene.load.image(keyFromPath(path), url);
+        const key = keyFromPath(path);
+        if (!skip.has(key)) scene.load.image(key, url);
     }
 }

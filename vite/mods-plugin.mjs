@@ -7,7 +7,12 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 const require = createRequire(import.meta.url);
-const { scanMods } = require('../electron/mod-scanner.cjs');
+const scannerPath = require.resolve('../electron/mod-scanner.cjs');
+
+function scanMods(root) {
+    delete require.cache[scannerPath];
+    return require(scannerPath).scanMods(root);
+}
 
 const modsRoot = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'mods');
 

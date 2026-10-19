@@ -4,11 +4,13 @@
 //
 // Layout of a mod:
 //   mods/<namespace>/
-//     data/<category>/<name>.json      -> ModDataFile
-//     data/function/<name>.ts          -> ModFunction (kind "function")
-//     data/feature_function/<name>.ts  -> ModFunction (kind "feature_function")
-//     data/tile_function/<name>.ts     -> ModFunction (kind "tile_function")
-//     assets/images/<type>/<...>.png   -> ModAsset
+//     data/<category>/<name>.json                 -> ModDataFile
+//     data/function/<kind>/<name>.ts              -> ModFunction (kind entity/tile/feature)
+//     assets/images/<type>/<...>.png              -> ModAsset
+//     override/<target_ns>/<category>/<name>.json -> ModDataFile replacing <target_ns>:<name>
+//     override/<target_ns>/function/<kind>/<name>.ts
+//     override/<target_ns>/images/<type>/<...>.png
+//     patch/<target_ns>/<category>/<name>.json    -> ModDataFile merged into <target_ns>:<name>
 
 const fs = require('fs');
 const path = require('path');
@@ -48,47 +50,66 @@ function transpile(src) {
     return transform(src, { transforms: ['typescript', 'imports'] }).code;
 }
 
-function scanMod(namespace, modDir) {
-    const data = [];
-    const functions = [];
-    const dataDir = path.join(modDir, 'data');
+function scanData(dataDir, out, extra) {
     for (const category of listDirs(dataDir)) {
+        if (category === 'images') continue;
         const catDir = path.join(dataDir, category);
         for (const rel of walk(catDir)) {
             const full = path.join(catDir, rel);
             const name = rel.replace(/\.[^.]+$/, '');
             if (rel.endsWith('.json')) {
                 // data/<category>/<...>/<name>.json -> category + subfoldered name
-                data.push({ category, name, json: readJson(full) });
-            } else if (rel.endsWith('.ts') && category === 'function') {
+                out.data.push({ category, name, json: readJson(full), ...extra });
+            } else if (rel.endsWith('.ts') && category === 'function' && !extra.patch) {
                 // data/function/<kind>/<...>/<name>.ts: the first subfolder is the
                 // kind (entity/feature/tile); the rest is the id within that kind.
                 const slash = rel.indexOf('/');
                 if (slash === -1) continue; // a .ts directly under function/ has no kind
                 const kind = rel.slice(0, slash);
                 const fnName = rel.slice(slash + 1).replace(/\.[^.]+$/, '');
-                functions.push({ kind, name: fnName, jsSource: transpile(fs.readFileSync(full, 'utf8')) });
+                out.functions.push({
+                    kind, name: fnName, jsSource: transpile(fs.readFileSync(full, 'utf8')), ...extra,
+                });
             }
         }
     }
+}
 
-    const assets = [];
-    const imagesDir = path.join(modDir, 'assets', 'images');
+function scanImages(imagesDir, out, extra) {
     for (const type of listDirs(imagesDir)) {
         const typeDir = path.join(imagesDir, type);
         for (const rel of walk(typeDir)) {
             const ext = path.extname(rel).toLowerCase();
             if (!MIME[ext]) continue;
             const b64 = fs.readFileSync(path.join(typeDir, rel)).toString('base64');
-            assets.push({
+            out.assets.push({
                 type,
                 name: rel.replace(/\.[^.]+$/, ''),
                 dataUri: `data:${MIME[ext]};base64,${b64}`,
+                ...extra,
             });
         }
     }
+}
 
-    return { namespace, data, assets, functions };
+function scanMod(namespace, modDir) {
+    const out = { namespace, data: [], assets: [], functions: [] };
+
+    scanData(path.join(modDir, 'data'), out, {});
+    scanImages(path.join(modDir, 'assets', 'images'), out, {});
+
+    const overrideDir = path.join(modDir, 'override');
+    for (const target of listDirs(overrideDir)) {
+        scanData(path.join(overrideDir, target), out, { target });
+        scanImages(path.join(overrideDir, target, 'images'), out, { target });
+    }
+
+    const patchDir = path.join(modDir, 'patch');
+    for (const target of listDirs(patchDir)) {
+        scanData(path.join(patchDir, target), out, { target, patch: true });
+    }
+
+    return out;
 }
 
 // Scans a mods root directory and returns { mods: LoadedMod[] }.

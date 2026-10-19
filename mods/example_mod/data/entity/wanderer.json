@@ -1,0 +1,12 @@
+{
+    "sprite": "slime",
+    "health": 5,
+    "speed": 60,
+    "acceleration": 400,
+    "drag": 500,
+    "scale": 4,
+    "attackDamage": 0,
+    "tags": ["animal"],
+    "functions": ["wander"],
+    "walkParticles": ["footprints"]
+}

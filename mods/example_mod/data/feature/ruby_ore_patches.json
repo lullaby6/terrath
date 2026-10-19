@@ -1,6 +1,6 @@
 {
     "tile": "ruby_ore",
-    "on": ["terrath:stone"],
+    "on": ["ground/stone"],
     "scale": 4,
     "density": 0.15,
     "function": "spread_group"
